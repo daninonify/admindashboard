@@ -155,37 +155,6 @@ export default function ChapelAttendance() {
         </div>
       </div>
 
-      <div className="flex gap-3 overflow-x-auto pb-1">
-        {[...chapelMeetings]
-          .sort((a, b) => new Date(b.date) - new Date(a.date))
-          .map((meeting) => {
-            const isActive = selectedMeetingId === meeting.id
-
-            return (
-              <button
-                key={meeting.id}
-                type="button"
-                onClick={() => setSelectedMeetingId(meeting.id)}
-                className={`min-w-[240px] rounded-3xl border px-4 py-4 text-left transition ${
-                  isActive
-                    ? 'border-cyan-300 bg-cyan-50 shadow-lg shadow-cyan-500/10'
-                    : 'border-slate-200/80 bg-white/75 hover:border-slate-300 hover:bg-white'
-                }`}
-              >
-                <p className="text-xs uppercase tracking-[0.22em] text-slate-500">
-                  {new Date(meeting.date).toLocaleDateString('en-US', {
-                    weekday: 'short',
-                    month: 'short',
-                    day: 'numeric',
-                  })}
-                </p>
-                <p className="mt-2 text-sm font-semibold text-slate-900">{meeting.title}</p>
-                <p className="mt-1 text-xs text-slate-500">{meeting.service}</p>
-              </button>
-            )
-          })}
-      </div>
-
       <div className="grid gap-3 sm:grid-cols-3">
         <div className="rounded-2xl bg-slate-100 px-4 py-3 text-sm font-semibold text-slate-700">Unmarked: {summary.unmarked}</div>
         <div className="rounded-2xl bg-emerald-100 px-4 py-3 text-sm font-semibold text-emerald-700">Present: {summary.present}</div>
@@ -195,6 +164,19 @@ export default function ChapelAttendance() {
       <div className="rounded-3xl border border-slate-200/80 bg-white/75 p-4 shadow-sm">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-1 flex-col gap-3 md:flex-row md:items-center">
+            <select
+              value={selectedMeetingId ?? ''}
+              onChange={(e) => setSelectedMeetingId(Number(e.target.value))}
+              className="premium-input w-full md:max-w-md"
+            >
+              {[...chapelMeetings]
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .map((meeting) => (
+                  <option key={meeting.id} value={meeting.id}>
+                    {meeting.title} - {meeting.service} - {new Date(meeting.date).toLocaleDateString()}
+                  </option>
+                ))}
+            </select>
             <input
               type="text"
               value={searchQuery}
